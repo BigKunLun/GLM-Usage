@@ -1,6 +1,7 @@
 # Build artifacts
 .build/
 venv/
+GLM_Usage.zip
 
 # macOS
 .DS_Store
@@ -12,3 +13,10 @@ debug_cookie*.py
 
 # App bundle (generated)
 GLM_Usage.app/
+
+# Secrets - NEVER commit these
+.env
+*.pem
+*.p12
+*api_key*
+*apikey*

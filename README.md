@@ -1,106 +1,92 @@
-# GLM Usage Monitor
+# GLM Usage
 
-一个macOS菜单栏应用，用于监控GLM Coding Plan的用量信息。
+一个简洁的 macOS 菜单栏应用，用于监控 GLM Coding Plan 的用量信息。
+
+![GLM Usage](GLM.png)
+
+## 功能特点
+
+- **状态栏直接显示** - 周用量百分比直接显示在菜单栏，一目了然
+- **详情面板** - 点击查看 5 小时额度、周额度、月额度详情
+- **自动刷新** - 每 5 分钟自动更新数据
+- **安全存储** - API Key 本地安全存储，不会上传
 
 ## 系统要求
 
 - macOS 13.0+
-- Xcode 15.0+
+
+## 安装使用
+
+### 方式一：直接下载（推荐）
+
+1. 前往 [Releases](../../releases) 下载最新版本的 `GLM_Usage.zip`
+2. 解压后将 `GLM_Usage.app` 拖入 `/Applications` 目录
+3. 首次运行可能需要在"系统设置 > 隐私与安全性"中允许
+
+### 方式二：自行编译
+
+```bash
+# 克隆仓库
+git clone https://github.com/BigKunLun/GLM-Usage.git
+cd GLM-Usage
+
+# 编译
+swift build -c release
+
+# 打包（或使用提供的脚本）
+./build.sh
+```
+
+## 获取 API Key
+
+1. 访问 [智谱开放平台](https://open.bigmodel.cn/)
+2. 登录后进入控制台
+3. 在 API Keys 页面获取您的 Key
+
+## 使用说明
+
+1. 首次启动点击"设置API Key"输入您的 API Key
+2. 状态栏会显示当前周用量百分比，如 `GLM 23%`
+3. 点击状态栏图标可查看详细用量信息
+4. 点击齿轮图标可修改 API Key
+
+## 状态栏图标说明
+
+| 显示 | 含义 |
+|------|------|
+| `GLM 23%` | 周用量百分比（正常） |
+| `GLM ⏳` | 正在加载数据 |
+| `GLM ⚙️` | 未配置 API Key |
+| `GLM ❌` | 请求出错 |
 
 ## 项目结构
 
 ```
 GLM_Usage/
-├── GLM_UsageApp.swift      // 应用入口
-├── ContentView.swift        // 主视图
-├── Models/                  // 数据模型
-├── ViewModels/              // ViewModel层
-├── Services/                // 服务层（API调用等）
-└── Views/                   // UI视图组件
+├── Sources/
+│   ├── GLM_UsageApp.swift    # 应用入口
+│   ├── ContentView.swift     # 主视图
+│   ├── Models/               # 数据模型
+│   ├── ViewModels/           # ViewModel
+│   ├── Services/             # API 服务
+│   └── Views/                # UI 组件
+├── Package.swift             # Swift Package 配置
+└── build.sh                  # 打包脚本
 ```
 
-## 如何创建Xcode项目
-
-### 方法一：使用Xcode创建新项目（推荐）
-
-1. **打开Xcode**，选择 `File` → `New` → `Project`
-
-2. **选择模板**：
-   - 选择 `macOS` 标签
-   - 选择 `App` 模板
-   - 点击 `Next`
-
-3. **配置项目**：
-   - Product Name: `GLM Usage`
-   - Team: 选择你的开发团队
-   - Organization Identifier: 你的标识符（如 `com.yourname`）
-   - Interface: `SwiftUI`
-   - Language: `Swift`
-   - Storage: `None`（这个应用不需要Core Data）
-   - 点击 `Next`
-
-4. **选择位置**：
-   - 选择 `/Users/shijianing/CodingTime/` 目录
-   - 取消勾选 `Create Git repository`（如果已有git仓库）
-   - 点击 `Create`
-
-5. **替换默认文件**：
-   - 删除Xcode自动创建的 `GLM_UsageApp.swift` 和 `ContentView.swift`
-   - 将本目录下的源文件拖入Xcode项目中
-   - 确保勾选 `Copy items if needed`
-
-6. **添加文件夹**：
-   - 在Xcode左侧项目导航器中，右键点击项目根目录
-   - 选择 `New Group`，创建 `Models`、`ViewModels`、`Services`、`Views` 文件夹
-
-### 方法二：使用Swift Package（适用于开发测试）
-
-如果只是想快速测试代码，可以直接用Swift Package：
+## 开发
 
 ```bash
-cd /Users/shijianing/CodingTime/GLM_Usage
-swift package init --type executable
+# 构建
+swift build
+
+# 运行
+swift run
+
+# 发布版本构建
+swift build -c release
 ```
 
-然后编辑 `Package.swift` 添加依赖。
+## License
 
-## 配置MenuBarExtra
-
-本项目使用 `MenuBarExtra`（macOS 13+新特性）创建菜单栏应用。
-
-### 修改GLM_UsageApp.swift
-
-将应用转换为菜单栏应用需要：
-
-1. 在 `Info.plist` 中设置 `LSUIElement` 为 `true`（隐藏Dock图标）
-2. 使用 `MenuBarExtra` 替代 `WindowGroup`
-
-示例代码：
-
-```swift
-@main
-struct GLM_UsageApp: App {
-    var body: some Scene {
-        MenuBarExtra("GLM Usage", systemImage: "chart.bar") {
-            ContentView()
-        }
-        .menuBarExtraStyle(.window)
-    }
-}
-```
-
-## 开发计划
-
-- [x] 项目结构创建
-- [ ] 数据模型实现
-- [ ] API服务实现
-- [ ] ViewModel实现
-- [ ] UI视图实现
-- [ ] 菜单栏集成
-- [ ] 后台定时刷新
-
-## 注意事项
-
-1. **Bundle Identifier**: 确保在Xcode中设置正确的Bundle Identifier
-2. **Signing**: 需要配置正确的签名证书才能运行
-3. **Permissions**: 如果需要网络访问，确保在沙盒设置中允许网络出站连接
+MIT License

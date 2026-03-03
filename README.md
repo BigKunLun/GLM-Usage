@@ -2,7 +2,9 @@
 
 一个简洁的 macOS 菜单栏应用，用于监控 GLM Coding Plan 的用量信息。
 
-![GLM Usage](GLM.png)
+<p align="center">
+  <img src="assets/GLM.png" width="128" height="128">
+</p>
 
 ## 功能特点
 
@@ -10,6 +12,13 @@
 - **详情面板** - 点击查看 5 小时额度、周额度、月额度详情
 - **自动刷新** - 每 5 分钟自动更新数据
 - **安全存储** - API Key 本地安全存储，不会上传
+
+## 截图
+
+<p align="center">
+  <img src="assets/screenshot-20260304-074132.png" width="300">
+  <img src="assets/screenshot-20260304-074202.png" width="300">
+</p>
 
 ## 系统要求
 
@@ -30,10 +39,7 @@
 git clone https://github.com/BigKunLun/GLM-Usage.git
 cd GLM-Usage
 
-# 编译
-swift build -c release
-
-# 打包（或使用提供的脚本）
+# 编译打包
 ./build.sh
 ```
 
@@ -70,6 +76,7 @@ GLM_Usage/
 │   ├── ViewModels/           # ViewModel
 │   ├── Services/             # API 服务
 │   └── Views/                # UI 组件
+├── assets/                   # 静态资源
 ├── Package.swift             # Swift Package 配置
 └── build.sh                  # 打包脚本
 ```

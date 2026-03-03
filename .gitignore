@@ -14,6 +14,9 @@ debug_cookie*.py
 # App bundle (generated)
 GLM_Usage.app/
 
+# Design docs (internal)
+docs/
+
 # Secrets - NEVER commit these
 .env
 *.pem

@@ -55,18 +55,18 @@ cat > GLM_Usage.app/Contents/Info.plist << 'EOF'
 EOF
 
 echo "🎨 转换应用图标..."
-if [ -f "GLM.png" ]; then
+if [ -f "assets/GLM.png" ]; then
     mkdir -p GLM_Usage.iconset
-    sips -z 16 16 GLM.png --out GLM_Usage.iconset/icon_16x16.png >/dev/null 2>&1
-    sips -z 32 32 GLM.png --out GLM_Usage.iconset/icon_16x16@2x.png >/dev/null 2>&1
-    sips -z 32 32 GLM.png --out GLM_Usage.iconset/icon_32x32.png >/dev/null 2>&1
-    sips -z 64 64 GLM.png --out GLM_Usage.iconset/icon_32x32@2x.png >/dev/null 2>&1
-    sips -z 128 128 GLM.png --out GLM_Usage.iconset/icon_128x128.png >/dev/null 2>&1
-    sips -z 256 256 GLM.png --out GLM_Usage.iconset/icon_128x128@2x.png >/dev/null 2>&1
-    sips -z 256 256 GLM.png --out GLM_Usage.iconset/icon_256x256.png >/dev/null 2>&1
-    sips -z 512 512 GLM.png --out GLM_Usage.iconset/icon_256x256@2x.png >/dev/null 2>&1
-    sips -z 512 512 GLM.png --out GLM_Usage.iconset/icon_512x512.png >/dev/null 2>&1
-    sips -z 1024 1024 GLM.png --out GLM_Usage.iconset/icon_512x512@2x.png >/dev/null 2>&1
+    sips -z 16 16 assets/GLM.png --out GLM_Usage.iconset/icon_16x16.png >/dev/null 2>&1
+    sips -z 32 32 assets/GLM.png --out GLM_Usage.iconset/icon_16x16@2x.png >/dev/null 2>&1
+    sips -z 32 32 assets/GLM.png --out GLM_Usage.iconset/icon_32x32.png >/dev/null 2>&1
+    sips -z 64 64 assets/GLM.png --out GLM_Usage.iconset/icon_32x32@2x.png >/dev/null 2>&1
+    sips -z 128 128 assets/GLM.png --out GLM_Usage.iconset/icon_128x128.png >/dev/null 2>&1
+    sips -z 256 256 assets/GLM.png --out GLM_Usage.iconset/icon_128x128@2x.png >/dev/null 2>&1
+    sips -z 256 256 assets/GLM.png --out GLM_Usage.iconset/icon_256x256.png >/dev/null 2>&1
+    sips -z 512 512 assets/GLM.png --out GLM_Usage.iconset/icon_256x256@2x.png >/dev/null 2>&1
+    sips -z 512 512 assets/GLM.png --out GLM_Usage.iconset/icon_512x512.png >/dev/null 2>&1
+    sips -z 1024 1024 assets/GLM.png --out GLM_Usage.iconset/icon_512x512@2x.png >/dev/null 2>&1
     iconutil -c icns GLM_Usage.iconset -o GLM_Usage.app/Contents/Resources/AppIcon.icns
     rm -rf GLM_Usage.iconset
 fi

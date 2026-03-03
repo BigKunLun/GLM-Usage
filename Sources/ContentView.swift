@@ -9,10 +9,32 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var viewModel: UsageViewModel
-    @State private var showAPIKeyInput = false
+    @State private var isEditingAPIKey = false
     @State private var inputAPIKey = ""
 
     var body: some View {
+        Group {
+            if isEditingAPIKey {
+                APIKeySettingsView(
+                    apiKey: $inputAPIKey,
+                    onCancel: {
+                        isEditingAPIKey = false
+                    },
+                    onSave: {
+                        viewModel.saveAPIKey(inputAPIKey)
+                        isEditingAPIKey = false
+                        Task {
+                            await viewModel.refresh()
+                        }
+                    }
+                )
+            } else {
+                mainView
+            }
+        }
+    }
+
+    private var mainView: some View {
         VStack(spacing: 16) {
             // 标题
             HStack {
@@ -25,7 +47,7 @@ struct ContentView: View {
                 }
                 Button(action: {
                     inputAPIKey = viewModel.apiKey
-                    showAPIKeyInput = true
+                    isEditingAPIKey = true
                 }) {
                     Image(systemName: "gearshape")
                         .foregroundColor(.secondary)
@@ -49,7 +71,7 @@ struct ContentView: View {
                         .foregroundColor(.secondary)
                     Button("设置API Key") {
                         inputAPIKey = ""
-                        showAPIKeyInput = true
+                        isEditingAPIKey = true
                     }
                     .buttonStyle(.borderedProminent)
                 }
@@ -106,24 +128,12 @@ struct ContentView: View {
                 await viewModel.refresh()
             }
         }
-        .sheet(isPresented: $showAPIKeyInput) {
-            APIKeySettingsView(
-                apiKey: $inputAPIKey,
-                onSave: {
-                    viewModel.saveAPIKey(inputAPIKey)
-                    showAPIKeyInput = false
-                    Task {
-                        await viewModel.refresh()
-                    }
-                }
-            )
-        }
     }
 }
 
 struct APIKeySettingsView: View {
     @Binding var apiKey: String
-    @Environment(\.dismiss) var dismiss
+    let onCancel: () -> Void
     let onSave: () -> Void
 
     var body: some View {
@@ -146,7 +156,7 @@ struct APIKeySettingsView: View {
 
             HStack(spacing: 16) {
                 Button("取消") {
-                    dismiss()
+                    onCancel()
                 }
                 .buttonStyle(.bordered)
 

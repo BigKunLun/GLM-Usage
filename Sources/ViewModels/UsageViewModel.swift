@@ -19,8 +19,11 @@ class UsageViewModel: ObservableObject {
     private let apiService = GLMAPIService()
     private let apiKeyKey = "glm_api_key"
     private var timer: Timer?
+    private let defaults: UserDefaults
 
     init() {
+        // 使用固定的 suite name 确保 .app 和命令行运行使用同一存储
+        self.defaults = UserDefaults(suiteName: "com.glm.usage") ?? .standard
         loadAPIKey()
         startAutoRefresh()
     }
@@ -28,12 +31,12 @@ class UsageViewModel: ObservableObject {
     // MARK: - API Key 管理
 
     func loadAPIKey() {
-        apiKey = UserDefaults.standard.string(forKey: apiKeyKey) ?? ""
+        apiKey = defaults.string(forKey: apiKeyKey) ?? ""
     }
 
     func saveAPIKey(_ key: String) {
         apiKey = key
-        UserDefaults.standard.set(key, forKey: apiKeyKey)
+        defaults.set(key, forKey: apiKeyKey)
     }
 
     func hasAPIKey() -> Bool {

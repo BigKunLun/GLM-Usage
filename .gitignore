@@ -1,0 +1,14 @@
+# Build artifacts
+.build/
+venv/
+
+# macOS
+.DS_Store
+*.swp
+
+# Debug files
+debug_cookie*.swift
+debug_cookie*.py
+
+# App bundle (generated)
+GLM_Usage.app/

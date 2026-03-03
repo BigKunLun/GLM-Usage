@@ -18,9 +18,11 @@ class UsageViewModel: ObservableObject {
 
     private let apiService = GLMAPIService()
     private let apiKeyKey = "glm_api_key"
+    private var timer: Timer?
 
     init() {
         loadAPIKey()
+        startAutoRefresh()
     }
 
     // MARK: - API Key 管理
@@ -64,5 +66,41 @@ class UsageViewModel: ObservableObject {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
         return formatter.string(from: usage.lastUpdated)
+    }
+
+    // MARK: - 状态栏文本
+
+    var statusText: String {
+        if isLoading {
+            return "GLM ⏳"
+        }
+        if !hasAPIKey() {
+            return "GLM ⚙️"
+        }
+        if errorMessage != nil {
+            return "GLM ❌"
+        }
+        let percentage = Int(usage.tokenWeekly.usagePercentage.rounded())
+        return "GLM \(percentage)%"
+    }
+
+    // MARK: - 定时刷新
+
+    func startAutoRefresh() {
+        stopAutoRefresh()
+        timer = Timer.scheduledTimer(withTimeInterval: 5 * 60, repeats: true) { [weak self] _ in
+            Task { @MainActor in
+                await self?.refresh()
+            }
+        }
+    }
+
+    func stopAutoRefresh() {
+        timer?.invalidate()
+        timer = nil
+    }
+
+    deinit {
+        timer?.invalidate()
     }
 }

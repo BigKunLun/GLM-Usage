@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var viewModel = UsageViewModel()
+    @EnvironmentObject var viewModel: UsageViewModel
     @State private var showAPIKeyInput = false
     @State private var inputAPIKey = ""
 

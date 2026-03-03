@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct GLM_UsageApp: App {
+    @StateObject private var viewModel = UsageViewModel()
+
     var body: some Scene {
-        MenuBarExtra("GLM", systemImage: "chart.bar.fill") {
+        MenuBarExtra(viewModel.statusText) {
             ContentView()
+                .environmentObject(viewModel)
         }
         .menuBarExtraStyle(.window)
     }

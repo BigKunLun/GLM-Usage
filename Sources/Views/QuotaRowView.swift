@@ -47,21 +47,21 @@ struct QuotaRowView: View {
 
             // 使用量详情
             HStack {
-                if quota.hasDetails {
-                    Text("\(formatNumber(quota.used)) / \(formatNumber(quota.total))")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                } else {
-                    Text("已使用 \(String(format: "%.0f%%", quota.usagePercentage))")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
+                Text("\(formatNumberOrDash(quota.used)) / \(formatNumberOrDash(quota.total))")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
 
-                if showResetTime, let resetTime = quota.resetTime {
+                if showResetTime {
                     Spacer()
-                    Text("重置: \(formatResetTime(resetTime))")
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
+                    if let resetTime = quota.resetTime {
+                        Text("重置: \(formatResetTime(resetTime))")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    } else {
+                        Text("重置: --")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
                 }
             }
         }
@@ -77,6 +77,13 @@ struct QuotaRowView: View {
         case .critical:
             return .red
         }
+    }
+
+    private func formatNumberOrDash(_ n: Int) -> String {
+        if n > 0 {
+            return formatNumber(n)
+        }
+        return "-"
     }
 
     private func formatNumber(_ n: Int) -> String {

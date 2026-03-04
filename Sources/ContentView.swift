@@ -41,10 +41,9 @@ struct ContentView: View {
                 Text("GLM 用量查询")
                     .font(.headline)
                 Spacer()
-                if viewModel.isLoading {
-                    ProgressView()
-                        .scaleEffect(0.6)
-                }
+                ProgressView()
+                    .scaleEffect(0.6)
+                    .opacity(viewModel.isLoading ? 1 : 0)
                 Button(action: {
                     inputAPIKey = viewModel.apiKey
                     isEditingAPIKey = true

@@ -17,7 +17,7 @@ struct QuotaRowView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 4) {
             // 标题行
             HStack {
                 Text(quota.name)
@@ -25,7 +25,7 @@ struct QuotaRowView: View {
                     .fontWeight(.medium)
                 Spacer()
                 Text(String(format: "%.0f%%", quota.usagePercentage))
-                    .font(.caption)
+                    .font(.subheadline)
                     .foregroundColor(statusColor)
             }
 
@@ -45,27 +45,36 @@ struct QuotaRowView: View {
             }
             .frame(height: 8)
 
-            // 使用量详情
+            // 使用量详情 - 始终占满整行宽度，避免布局变化
             HStack {
-                Text("\(formatNumberOrDash(quota.used)) / \(formatNumberOrDash(quota.total))")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                if quota.hasDetails {
+                    Text("\(formatNumber(quota.used)) / \(formatNumber(quota.total))")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                } else {
+                    Text("已使用 \(String(format: "%.0f%%", quota.usagePercentage))")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+
+                Spacer()
 
                 if showResetTime {
-                    Spacer()
-                    if let resetTime = quota.resetTime {
-                        Text("重置: \(formatResetTime(resetTime))")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                    } else {
-                        Text("重置: --")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                    }
+                    Text(resetTimeText)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .frame(minWidth: 60, alignment: .trailing)
                 }
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, 2)
+    }
+
+    private var resetTimeText: String {
+        if let resetTime = quota.resetTime {
+            return "重置: \(formatResetTime(resetTime))"
+        }
+        return ""
     }
 
     private var statusColor: Color {
@@ -77,13 +86,6 @@ struct QuotaRowView: View {
         case .critical:
             return .red
         }
-    }
-
-    private func formatNumberOrDash(_ n: Int) -> String {
-        if n > 0 {
-            return formatNumber(n)
-        }
-        return "-"
     }
 
     private func formatNumber(_ n: Int) -> String {

@@ -35,15 +35,19 @@ struct ContentView: View {
     }
 
     private var mainView: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 10) {
             // 标题
             HStack {
-                Text("GLM 用量查询")
-                    .font(.headline)
+                HStack(spacing: 4) {
+                    Text("GLM 用量查询")
+                        .font(.headline)
+                    if viewModel.isLoading {
+                        Text("●")
+                            .font(.headline)
+                            .foregroundColor(.blue)
+                    }
+                }
                 Spacer()
-                ProgressView()
-                    .scaleEffect(0.6)
-                    .opacity(viewModel.isLoading ? 1 : 0)
                 Button(action: {
                     inputAPIKey = viewModel.apiKey
                     isEditingAPIKey = true
@@ -53,6 +57,7 @@ struct ContentView: View {
                 }
                 .buttonStyle(.borderless)
             }
+            .animation(.easeInOut(duration: 0.3), value: viewModel.isLoading)
 
             Divider()
 
@@ -89,7 +94,7 @@ struct ContentView: View {
                 .padding()
             } else {
                 // 额度列表 - 3个数据
-                VStack(spacing: 12) {
+                VStack(spacing: 6) {
                     QuotaRowView(quota: viewModel.usage.token5Hour)
                     QuotaRowView(quota: viewModel.usage.tokenWeekly)
                     QuotaRowView(quota: viewModel.usage.mcpMonthly, showResetTime: false)
@@ -116,12 +121,12 @@ struct ContentView: View {
                 Spacer()
 
                 Text("更新: \(viewModel.formatLastUpdated())")
-                    .font(.caption2)
+                    .font(.caption)
                     .foregroundColor(.secondary)
             }
         }
-        .padding()
-        .frame(width: 300)
+        .padding(12)
+        .frame(width: 260)
         .task {
             if viewModel.hasAPIKey() {
                 await viewModel.refresh()

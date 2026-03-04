@@ -16,8 +16,7 @@
 ## 截图
 
 <p align="center">
-  <img src="assets/screenshot-20260304-074132.png" width="300">
-  <img src="assets/screenshot-20260304-074202.png" width="300">
+  <img src="assets/screenshot-20260304-231337.png" width="260">
 </p>
 
 ## 系统要求

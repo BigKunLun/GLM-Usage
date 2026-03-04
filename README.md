@@ -31,6 +31,7 @@
 1. 前往 [Releases](../../releases) 下载最新版本的 `GLM_Usage.zip`
 2. 解压后将 `GLM_Usage.app` 拖入 `/Applications` 目录
 3. 首次运行可能需要在"系统设置 > 隐私与安全性"中允许
+4. 可以使用命令解决：sudo xattr -rc /Users/xxxx/Downloads/GLM_Usage.app
 
 ### 方式二：自行编译
 

@@ -142,7 +142,11 @@ class UpdateService {
         let fileHandle = try FileHandle(forWritingTo: destination)
 
         defer {
-            try? fileHandle.close()
+            do {
+                try fileHandle.close()
+            } catch {
+                // Ignore close errors
+            }
         }
 
         // 流式下载

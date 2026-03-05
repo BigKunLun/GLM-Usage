@@ -126,40 +126,27 @@ class UpdateService {
 
         var request = URLRequest(url: url)
         request.setValue("GLM-Usage-macOS", forHTTPHeaderField: "User-Agent")
+        request.httpShouldHandleCookies = true
 
-        let (asyncBytes, response) = try await session.bytes(for: request)
+        // 使用 downloadTask 更可靠地处理重定向
+        let (tempURL, response) = try await session.download(for: request, delegate: nil)
 
-        guard let httpResponse = response as? HTTPURLResponse,
-              httpResponse.statusCode == 200 else {
+        guard let httpResponse = response as? HTTPURLResponse else {
             throw UpdateError.downloadFailed(URLError(.badServerResponse))
         }
 
-        let expectedLength = response.expectedContentLength
-        var receivedLength: Int64 = 0
-
-        // 创建文件句柄
-        FileManager.default.createFile(atPath: destination.path, contents: nil)
-        let fileHandle = try FileHandle(forWritingTo: destination)
-
-        defer {
-            do {
-                try fileHandle.close()
-            } catch {
-                // Ignore close errors
-            }
+        // 接受 200 和重定向后的响应
+        guard httpResponse.statusCode == 200 else {
+            print("下载失败，状态码: \(httpResponse.statusCode)")
+            throw UpdateError.downloadFailed(URLError(.badServerResponse))
         }
 
-        // 流式下载
-        for try await byte in asyncBytes {
-            try fileHandle.write(contentsOf: [byte])
-            receivedLength += 1
+        // 移动到目标位置
+        try FileManager.default.moveItem(at: tempURL, to: destination)
 
-            if expectedLength > 0 {
-                let progressValue = Double(receivedLength) / Double(expectedLength)
-                await MainActor.run {
-                    progress(progressValue)
-                }
-            }
+        // 报告完成
+        await MainActor.run {
+            progress(1.0)
         }
 
         return destination

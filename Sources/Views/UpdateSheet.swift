@@ -65,11 +65,22 @@ struct UpdateSheet: View {
             // 下载进度
             if case .downloading(let progress) = viewModel.state {
                 VStack(spacing: 4) {
-                    ProgressView(value: progress) {
-                        Text("下载中... \(Int(progress * 100))%")
-                            .font(.caption)
+                    if progress > 0 {
+                        ProgressView(value: progress) {
+                            Text("下载中... \(Int(progress * 100))%")
+                                .font(.caption)
+                        }
+                    } else {
+                        HStack(spacing: 8) {
+                            ProgressView()
+                                .scaleEffect(0.8)
+                            Text("正在下载...")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
                     }
                 }
+                .padding(.vertical, 4)
             }
 
             // 错误提示

@@ -46,6 +46,7 @@ class UpdateViewModel: ObservableObject {
 
     private let updateService = UpdateService.shared
     private(set) var currentVersion: String
+    private(set) var pendingRelease: GitHubRelease?  // 保存待更新的 release 信息
 
     init() {
         self.currentVersion = updateService.currentAppVersion()
@@ -62,6 +63,7 @@ class UpdateViewModel: ObservableObject {
             let latestVersion = release.tagName
 
             if updateService.isNewerVersion(latestVersion, than: currentVersion) {
+                pendingRelease = release
                 state = .updateAvailable(release)
                 showUpdateSheet = true
             } else {
@@ -74,6 +76,10 @@ class UpdateViewModel: ObservableObject {
 
     /// 获取当前更新信息（如果有）
     var updateInfo: GitHubRelease? {
+        // 优先返回 pendingRelease（在下载过程中也能获取）
+        if let release = pendingRelease {
+            return release
+        }
         if case .updateAvailable(let release) = state {
             return release
         }
@@ -122,6 +128,7 @@ class UpdateViewModel: ObservableObject {
     func reset() {
         state = .idle
         showUpdateSheet = false
+        pendingRelease = nil
     }
 
     /// 获取下载页面 URL

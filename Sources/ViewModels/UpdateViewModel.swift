@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-enum UpdateState {
+enum UpdateState: Equatable {
     case idle
     case checking
     case noUpdate
@@ -16,6 +16,27 @@ enum UpdateState {
     case downloading(progress: Double)
     case readyToInstall
     case error(String)
+
+    static func == (lhs: UpdateState, rhs: UpdateState) -> Bool {
+        switch (lhs, rhs) {
+        case (.idle, .idle):
+            return true
+        case (.checking, .checking):
+            return true
+        case (.noUpdate, .noUpdate):
+            return true
+        case (.updateAvailable(let l), .updateAvailable(let r)):
+            return l.tagName == r.tagName
+        case (.downloading(let lp), .downloading(let rp)):
+            return lp == rp
+        case (.readyToInstall, .readyToInstall):
+            return true
+        case (.error(let l), .error(let r)):
+            return l == r
+        default:
+            return false
+        }
+    }
 }
 
 @MainActor

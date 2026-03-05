@@ -9,8 +9,11 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var viewModel: UsageViewModel
+    @StateObject private var updateViewModel = UpdateViewModel()
+
     @State private var isEditingAPIKey = false
     @State private var inputAPIKey = ""
+    @State private var showNoUpdateToast = false
 
     var body: some View {
         Group {
@@ -30,6 +33,21 @@ struct ContentView: View {
                 )
             } else {
                 mainView
+            }
+        }
+        .sheet(isPresented: $updateViewModel.showUpdateSheet) {
+            if let release = updateViewModel.updateInfo {
+                UpdateSheet(viewModel: updateViewModel, release: release)
+            }
+        }
+        .alert("已是最新版本", isPresented: $showNoUpdateToast) {
+            Button("好的", role: .cancel) { }
+        } message: {
+            Text("当前版本 \(updateViewModel.currentVersion) 已是最新")
+        }
+        .onChange(of: updateViewModel.state) { newState in
+            if case .noUpdate = newState {
+                showNoUpdateToast = true
             }
         }
     }
@@ -56,6 +74,16 @@ struct ContentView: View {
                         .foregroundColor(.secondary)
                 }
                 .buttonStyle(.borderless)
+                Button(action: {
+                    Task {
+                        await updateViewModel.checkForUpdate()
+                    }
+                }) {
+                    Image(systemName: "arrow.triangle.2.circlepath")
+                        .foregroundColor(.secondary)
+                }
+                .buttonStyle(.borderless)
+                .disabled(isCheckingUpdate)
             }
             .animation(.easeInOut(duration: 0.3), value: viewModel.isLoading)
 
@@ -132,6 +160,13 @@ struct ContentView: View {
                 await viewModel.refresh()
             }
         }
+    }
+
+    private var isCheckingUpdate: Bool {
+        if case .checking = updateViewModel.state {
+            return true
+        }
+        return false
     }
 }
 
